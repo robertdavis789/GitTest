@@ -63,8 +63,8 @@ node{
  
 	gitToIspwIntegration app: 'PLAY', 
 	branchMapping: '''*master* => DEV2, per-commit''', 
-	connectionId: 'b3a06d76-c084-4255-8ab9-f41b48e33b81', 
-	credentialsId: 'cw09', 
+	connectionId: 'cd495bfe-0ddb-48d2-b5af-2bf43e443ff7', 
+	credentialsId: '897ae347-b055-495d-9c9a-335cf9b5791a', 
 	gitCredentialsId: 'a54eaaca-e673-4912-9500-a593533f6bf9', 
 	gitRepoUrl: 'https://github.com/robertdavis789/GitTest.git', 
 	runtimeConfig: 'TPZP', 
