@@ -1,7 +1,7 @@
       *********************************************************
       *   COPYBOOK TCPYA16
       *   COPYBOOK TCPYA16
-      *   THIS IS A TRAINING COPY BsOOK changed by Craigxss
+      *   THIS IS A TRAINING COPY BsOOK changed by Craigxsss
       *********************************************************
       ** Change for copybook
        01  STAR-LINE-1.
