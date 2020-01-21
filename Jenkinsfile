@@ -62,7 +62,7 @@ node{
             stream: "${ISPW_Stream}"*/
  
 	gitToIspwIntegration app: 'PLAY', 
-	branchMapping: '''*master* => DEV2, per-commit''', 
+	branchMapping: '''*master* => DEV9, per-commit''', 
 	connectionId: 'cd495bfe-0ddb-48d2-b5af-2bf43e443ff7', 
 	credentialsId: '897ae347-b055-495d-9c9a-335cf9b5791a', 
 	gitCredentialsId: 'a54eaaca-e673-4912-9500-a593533f6bf9', 
