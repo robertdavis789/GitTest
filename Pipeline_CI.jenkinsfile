@@ -7,11 +7,11 @@ import groovy.json.JsonOutput
 import java.net.URL
 
 
- String Git_Credentials      = "githubenterprise-pfhsxk0"
- String Git_URL              = "http://dtw-githubenterprise.nasa.cpwr.corp/pmisvz0/GIT1.git"
+ String Git_Credentials      = "a54eaaca-e673-4912-9500-a593533f6bf9"
+ String Git_URL              = "https://github.com/robertdavis789/GitTest.git"
  String ISPW_Application     = "PLAY"
- String HCI_Conn_ID	         = "6c5988e9-94e2-4989-8a40-5a6d9bf310c1"
- String HCI_Token            = "1a256d6e-7f5b-406a-a9e4-061e77a60f11"
+ String HCI_Conn_ID	         = "cw09"
+ String HCI_Token            = "b3a06d76-c084-4255-8ab9-f41b48e33b81"
  String ISPW_Stream	         = "PLAY"
  String CES_TOKEN            = "1a256d6e-7f5b-406a-a9e4-061e77a60f11"		 //6839356e-0256-4a8f-8de9-3d223a1b7d36
  String LEVEL                = "DEV1"        
