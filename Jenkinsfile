@@ -33,7 +33,7 @@ node{
     stage("Loading Mainframe code to ISPW") 
     {
             gitToIspwIntegration app: "${ISPW_Application}", 
-            branchMapping: '''*master* => QA, per-branch''',
+            branchMapping: '''*dev2* => DEV2, per-branch''',
             connectionId: "${HCI_Conn_ID}", 
             credentialsId: "${HCI_Token}", 
             gitCredentialsId: "${Git_Credentials}", 
