@@ -7,8 +7,8 @@ import groovy.json.JsonOutput
 import java.net.URL
 
 
- String Git_Credentials      = "Bitbucket"
- String Git_URL              = "evolve.compuware.com/scm/~robert.davis_compuware.com/gitrepo.git"
+ String Git_Credentials      = "GitHub"
+ String Git_URL              = "https://github.com/robertdavis789/GitTest.git"
  String ISPW_Application     = "PLAY"
  String HCI_Conn_ID	         = "fc29cb3e-b2f9-4573-ae44-4a6a201c8e07"
  String HCI_Token            = "Topaz"
