@@ -7,100 +7,84 @@ import groovy.json.JsonOutput
 import java.net.URL
 
 
- String Git_Credentials      = "a54eaaca-e673-4912-9500-a593533f6bf9"
- String Git_URL              = "https://github.com/robertdavis789/GitTest.git"
+ String Git_Credentials      = "Bitbucket"
+ String Git_URL              = "evolve.compuware.com/scm/~robert.davis_compuware.com/gitrepo.git"
  String ISPW_Application     = "PLAY"
- String HCI_Conn_ID	         = "cw09"
- String HCI_Token            = "b3a06d76-c084-4255-8ab9-f41b48e33b81"
+ String HCI_Conn_ID	         = "fc29cb3e-b2f9-4573-ae44-4a6a201c8e07"
+ String HCI_Token            = "Topaz"
  String ISPW_Stream	         = "PLAY"
- String CES_TOKEN            = "1a256d6e-7f5b-406a-a9e4-061e77a60f11"		 //6839356e-0256-4a8f-8de9-3d223a1b7d36
- String LEVEL                = "DEV1"        
+ String CES_TOKEN            = "b04b6c61-26a7-43af-8fe3-153620461f51"		 //6839356e-0256-4a8f-8de9-3d223a1b7d36
+ String LEVEL
+ String ASSIGNMENT
 
-
- def String DetermineLevel() {
- 
-        def String Request = "assignmentId=GIT1000007\nlevel=HFIX"
-
-        if (env.BRANCH_NAME == 'master'){
-            Request = "assignmentId=GIT1000009\n" + "level=MSTR"
-        }
-        else if(env.BRANCH_NAME == 'feature1'){
-            Request = "assignmentId=GIT1000008\n" + "level=FT1"
-        }
-        else if (env.BRANCH_NAME == 'feature2'){
-            Request = "assignmentId=GIT1000008\n" + "level=FT2"
-        }       
-        else if(env.BRANCH_NAME == 'hotfix'){
-            Request = "assignmentId=GIT1000007\n" + "level=HFIX"
-        } 
-        return Request
-}
 
 /* 
   Node is a required part of the Jenkins pipeline for any steps to be executed
 */ 
 node{
 
+	/*  This stage will retrieve the code from Git   */
     stage("Checkout")
     {
       checkout scm
     }    
-
+    
     /*  This loads the changed files into ISPW    */ 
     stage("Loading Mainframe code to ISPW") 
     {
-    /*
             gitToIspwIntegration app: "${ISPW_Application}", 
-            branchMapping: '''*master* => DEV1, per-branch
-            *feature1* => DEV1, per-branch
-            *ug* => DEV1, per-branch''', 
+            branchMapping: '''*dev2* => QA, per-branch''',
             connectionId: "${HCI_Conn_ID}", 
             credentialsId: "${HCI_Token}", 
             gitCredentialsId: "${Git_Credentials}", 
             gitRepoUrl: "${Git_URL}", 
-            runtimeConfig: '', 
-            stream: "${ISPW_Stream}"*/
- 
-	gitToIspwIntegration app: 'PLAY', 
-	branchMapping: '''*master* => DEV9, per-commit''', 
-	connectionId: 'cd495bfe-0ddb-48d2-b5af-2bf43e443ff7', 
-	credentialsId: '897ae347-b055-495d-9c9a-335cf9b5791a', 
-	gitCredentialsId: 'a54eaaca-e673-4912-9500-a593533f6bf9', 
-	gitRepoUrl: 'https://github.com/robertdavis789/GitTest.git', 
-	runtimeConfig: 'TPZP', 
-	stream: 'PLAY'
- 
+            runtimeConfig: 'tpzp', 
+            stream: "${ISPW_Stream}"
  
     }
 
-/*
     stage("Build Mainframe Code")
     {
-        LEVEL = DetermineLevel()
-        
-        echo "${CES_TOKEN}"
-        
+                
         ispwOperation connectionId: "${HCI_Conn_ID}", 
-        consoleLogResponseBody: true, 
+        consoleLogResponseBody: false, 
         credentialsId: "${CES_TOKEN}", 
-        ispwAction: 'GenerateTasksInAssignment', 
-        ispwRequestBody: LEVEL
-        //sleep 3
+        ispwAction: 'BuildTask',
+        ispwRequestBody: '''buildautomatically = true'''
+    
     }
     
     stage("Deploy Mainframe Code")
     {
-        //LEVEL = DetermineLevel()
-        
-        //Request = "assignmentId=GIT1000003\n" + "level=${LEVEL}"    
-
-        //ispwOperation connectionId: "${HCI_Conn_ID}", 
-        //consoleLogResponseBody: true, 
-        //credentialsId: "${CES_TOKEN}", 
-        //ispwAction: 'DeployAssignment', 
-        //ispwRequestBody: LEVEL 
-        sleep 4
+    
+        sleep 3
+        def automaticBuildParams = readJSON file: 'automaticBuildParams.txt'
+   
+        ispwOperation connectionId: "${HCI_Conn_ID}", 
+        consoleLogResponseBody: false, 
+        credentialsId: "${CES_TOKEN}", 
+        ispwAction: 'DeployAssignment', 
+        ispwRequestBody: "assignmentId=${automaticBuildParams.containerId}\nlevel=${automaticBuildParams.taskLevel}" 
+    
     }
-    */
-
+    stage("SonarQube Scan")
+    {
+        // Requires SonarQube Scanner 2.8+
+        def scannerHome = tool 'scanner';
+        withSonarQubeEnv('cwcc') 
+        {
+            def SQ_PullRequest          = " -Dsonar.branch.name=${env.BRANCH_NAME} -Dsonar.branch.target=master"
+            def SQ_ProjectKey           = " -Dsonar.projectKey=SXK1_Git -Dsonar.projectName=GIT1 -Dsonar.projectVersion=1.0"
+            def SQ_Source               = " -Dsonar.sources=Mainframe/Cobol"
+            def SQ_Copybook             = " -Dsonar.cobol.copy.directories=Mainframe/Cobol/Copybooks"
+            def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
+ 
+            if (env.BRANCH_NAME == 'master') {
+                bat "${scannerHome}/bin/sonar-scanner" + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+            } else {
+                bat "${scannerHome}/bin/sonar-scanner" + SQ_PullRequest + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf        
+            }
+            
+        }
+    }
 }
