@@ -48,7 +48,7 @@ node{
                 
         ispwOperation connectionId: "${HCI_Conn_ID}", 
         consoleLogResponseBody: 'false', 
-        credentialsId: "${CES_TOKEN}", 
+        credentialsId: '6af7954f-3954-4b78-a339-286e6967742d', 
         ispwAction: 'BuildTask',
         ispwRequestBody: '''buildautomatically = true'''
     
