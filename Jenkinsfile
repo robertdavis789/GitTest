@@ -13,7 +13,7 @@ import java.net.URL
  String HCI_Conn_ID	         = 'fc29cb3e-b2f9-4573-ae44-4a6a201c8e07'
  String HCI_Token            = "Topaz"
  String ISPW_Stream	         = "PLAY"
- String CES_TOKEN            = '6af7954f-3954-4b78-a339-286e6967742d'
+ String CES_TOKEN            = "CES"
  String LEVEL
  String ASSIGNMENT
 
@@ -48,7 +48,7 @@ node{
                 
         ispwOperation connectionId: "${HCI_Conn_ID}", 
         consoleLogResponseBody: 'false', 
-        credentialsId: '6af7954f-3954-4b78-a339-286e6967742d', 
+        credentialsId: "${CES_TOKEN}, 
         ispwAction: 'BuildTask',
         ispwRequestBody: '''buildautomatically = true'''
     
