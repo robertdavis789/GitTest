@@ -13,7 +13,7 @@ import java.net.URL
  String HCI_Conn_ID	         = "fc29cb3e-b2f9-4573-ae44-4a6a201c8e07"
  String HCI_Token            = "Topaz"
  String ISPW_Stream	         = "PLAY"
- String CES_TOKEN            = "b04b6c61-26a7-43af-8fe3-153620461f51"		 //6839356e-0256-4a8f-8de9-3d223a1b7d36
+ String CES_TOKEN            = "a0584777-dfb3-4357-bce1-a794d995a9b6"		 //6839356e-0256-4a8f-8de9-3d223a1b7d36
  String LEVEL
  String ASSIGNMENT
 
