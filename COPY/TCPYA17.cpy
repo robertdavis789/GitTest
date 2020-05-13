@@ -1,6 +1,6 @@
 
       *********************************************************
-      *   COPYBOOK TCPYA17 Changed for a demo   Change for demo
+      *   COPYBOOK TCPYA17 Changed for a demo   Change for demos
       *************Again***************************************
       *********************************************************
        01  STAR-LINE-1.
