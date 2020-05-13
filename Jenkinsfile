@@ -46,9 +46,9 @@ node{
     stage("Build Mainframe Code")
     {
                 
-        ispwOperation connectionId: ${HCI_Conn_ID}, 
-        consoleLogResponseBody: false, 
-        credentialsId: ${CES_TOKEN}, 
+        ispwOperation connectionId: "${HCI_Conn_ID}", 
+        consoleLogResponseBody: 'false', 
+        credentialsId: "${CES_TOKEN}", 
         ispwAction: 'BuildTask',
         ispwRequestBody: '''buildautomatically = true'''
     
