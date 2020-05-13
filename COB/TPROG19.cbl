@@ -5,7 +5,7 @@
        DATE-COMPILED.
       
       ********************************************************
-      * THIS PROGRAM IS A TRAINING PROGRAM
+      * THIS PROGRAM IS A TRAINING PROGRAMfff
       *      WITH A LINK TO TSUBR19
       *
       *      AND COPYLIBS   TCPYA19   (HEADER)
