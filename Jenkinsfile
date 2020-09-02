@@ -9,7 +9,7 @@ node {
  stage('Git to ISPW Synchronization')
  { 
     gitToIspwIntegration app: 'PLAY', 
-    branchMapping: '''*Play* => DEV1, per-branch''',
+    branchMapping: '''*dev2* => DEV2, per-branch''',
     connectionId: 'fc29cb3e-b2f9-4573-ae44-4a6a201c8e07', 
     credentialsId: 'Topaz', 
     gitCredentialsId: 'Bitbucket', 
