@@ -1,0 +1,66 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testscenario:testscenario xmlns:checkconditions="http://www.compuware.com/model/xml/checkconditions" xmlns:listructure="http://www.compuware.com/model/xml/listructure" xmlns:properties="http://www.compuware.com/model/xml/properties" xmlns:testcase="http://www.compuware.com/model/xml/testcase" xmlns:testscenario="http://www.compuware.com/model/xml/testscenario" alias="" id="UnitTest/Scenarios/CWBWCOBX_Scenario.testscenario">
+  <testscenario:description></testscenario:description>
+  <testscenario:testcases>
+    <testscenario:testcase alias="" csect="CWBWCOBX" encoding="1047" entrypoint="CWBWCOBX#C" id="Unit%20Test/Scenarios/CWBWCOBX_Scenario.testscenario%23CWBWCOBX%20Beginning%20of%20Month" target="CWBWCOBX">
+      <testcase:description></testcase:description>
+      <testcase:ddio>SALESSUP.GIT1.WRK2.LOAD.DB</testcase:ddio>
+      <testcase:ddiotype>DDIO</testcase:ddiotype>
+      <testcase:targetCaptureCompileTime>1550242257000</testcase:targetCaptureCompileTime>
+      <testcase:interface>../Interfaces/CWBWCOBX.interface#Unit%20Test/Interfaces/CWBWCOBX.interface</testcase:interface>
+      <testcase:input listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure">
+        <testcase:data baseType="listructure:structType ../Structures/CWBWCOBX_PARMINFO.listructure#PARMINFO" id="arg0.PARMINFO">
+          <properties:properties>
+            <properties:property name="value" type="string">000CF0F0F0F0F36BF2F0F0F1F3F100000000000000</properties:property>
+            <properties:property name="expectedValue" type="string">000CF0F0F0F0F36BF1F9F0F1F0F10000B136000000</properties:property>
+            <properties:property name="address" type="string">37AB3568</properties:property>
+          </properties:properties>
+        </testcase:data>
+        <testcase:data baseType="listructure:numberType ../Structures/CWBWCOBX_PARMINFO.listructure#PARMINFO.GRAND_TOTAL" id="input.arg0.PARMINFO.GRAND_TOTAL"/>
+        <testcase:data baseType="listructure:numberType ../Structures/CWBWCOBX_PARMINFO.listructure#PARMINFO.TOTAL_RECORD" id="input.arg0.PARMINFO.TOTAL_RECORD"/>
+        <testcase:data baseType="listructure:numberType ../Structures/CWBWCOBX_PARMINFO.listructure#PARMINFO.RUN_DATE" id="input.arg0.PARMINFO.RUN_DATE"/>
+        <testcase:data baseType="listructure:numberType ../Structures/CWBWCOBX_PARMINFO.listructure#PARMINFO.RUN_DATE" id="input.arg0.PARMINFO.RUN_DATE"/>
+      </testcase:input>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:output listructure="../Structures/CWBWCOBX_PARMINFO.listructure#Unit%20Test/Structures/CWBWCOBX_PARMINFO.listructure"/>
+      <testcase:checkconditions>
+        <checkconditions:complexCheckcondition message="Complex check condition failed" name="Complex check condition"/>
+        <checkconditions:simpleCheckcondition refData="#input.arg0.PARMINFO.GRAND_TOTAL">
+          <checkconditions:expression></checkconditions:expression>
+          <checkconditions:expectation assert="noassert" type="number"></checkconditions:expectation>
+        </checkconditions:simpleCheckcondition>
+        <checkconditions:simpleCheckcondition refData="#input.arg0.PARMINFO.TOTAL_RECORD">
+          <checkconditions:expression></checkconditions:expression>
+          <checkconditions:expectation assert="noassert" type="number"></checkconditions:expectation>
+        </checkconditions:simpleCheckcondition>
+        <checkconditions:simpleCheckcondition refData="#input.arg0.PARMINFO.RUN_DATE">
+          <checkconditions:expression></checkconditions:expression>
+          <checkconditions:expectation assert="noassert" type="number"></checkconditions:expectation>
+        </checkconditions:simpleCheckcondition>
+        <checkconditions:simpleCheckcondition refData="#input.arg0.PARMINFO.RUN_DATE">
+          <checkconditions:expression>BigDecimalCreator.make('190101').compareTo(output.arg0.PARMINFO.RUN_DATE) eq 0</checkconditions:expression>
+          <checkconditions:expectation assert="noassert" type="number">190101</checkconditions:expectation>
+        </checkconditions:simpleCheckcondition>
+      </testcase:checkconditions>
+      <testcase:stubs>
+        <testcase:stub>../Stubs/CWBWCOBX_CWBWDATE_01.stub#Unit%20Test/Stubs/CWBWCOBX_CWBWDATE_01.stub</testcase:stub>
+        <testcase:stub>../Stubs/CWBWCOBX_CWBWSUBC_01.stub#Unit%20Test/Stubs/CWBWCOBX_CWBWSUBC_01.stub</testcase:stub>
+        <testcase:stub>../Stubs/CWBWCOBX_EMPFILE_FILE_01.stub#Unit%20Test/Stubs/CWBWCOBX_EMPFILE_FILE_01.stub</testcase:stub>
+      </testcase:stubs>
+      <testcase:returncode listructure="../Structures/CWBWCOBX_RETURN-CODE.listructure#Unit%20Test/Structures/CWBWCOBX_RETURN-CODE.listructure">
+        <testcase:data baseType="listructure:structType ../Structures/CWBWCOBX_RETURN-CODE.listructure#RETURN_CODE" id="arg0.RETURN_CODE">
+          <properties:properties>
+            <properties:property name="expectedValue" type="string">0000</properties:property>
+          </properties:properties>
+        </testcase:data>
+      </testcase:returncode>
+      <testcase:ddioMemberName>CWBWCOBX</testcase:ddioMemberName>
+    </testscenario:testcase>
+  </testscenario:testcases>
+</testscenario:testscenario>

@@ -1,0 +1,160 @@
+#!/usr/bin/env groovy
+import hudson.model.*
+import hudson.EnvVars
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+import java.net.URL
+
+
+ String Git_Credentials      = "githubenterprise-pfhsxk0"
+ String Git_URL              = "http://dtw-githubenterprise.nasa.cpwr.corp/pfhsxk0/GIT1.git"
+ String ISPW_Application     = "GIT1"
+ String HCI_Conn_ID          = "6c5988e9-94e2-4989-8a40-5a6d9bf310c1"
+ String HCI_Token            = "cwcc"               //cwcc
+ String ISPW_Stream          = "GITDEMO"
+ String CES_TOKEN            = "6839356e-0256-4a8f-8de9-3d223a1b7d36"        //6839356e-0256-4a8f-8de9-3d223a1b7d36 
+ String LEVEL
+ String ASSIGNMENT
+
+
+/* 
+  Node is a required part of the Jenkins pipeline for any steps to be executed
+*/ 
+node{
+
+    /*  This stage will retrieve the code from Git   */
+    stage("Checkout")
+    {
+      checkout scm
+    }    
+    
+    /*  This loads the changed files into ISPW    */ 
+    stage("Loading Mainframe code to ISPW") 
+    {
+            gitToIspwIntegration app: "${ISPW_Application}", 
+            branchMapping: '''*master* => MSTR, per-branch
+            feature1 => FT1, per-branch
+            Bug => HFIX, per-branch''', 
+            connectionId: "${HCI_Conn_ID}", 
+            credentialsId: "${HCI_Token}", 
+            gitCredentialsId: "${Git_Credentials}", 
+            gitRepoUrl: "${Git_URL}", 
+            runtimeConfig: '', 
+            stream: "${ISPW_Stream}"
+ 
+    }
+
+    def exists = fileExists 'automaticBuildParams.txt'
+
+    if (exists) {
+    
+    def automaticBuildParams = readJSON file: 'automaticBuildParams.txt'
+    } 
+    
+    stage("Build Mainframe Code")
+    {
+        sleep 2
+        if (exists) {            
+        ispwOperation connectionId: "${HCI_Conn_ID}", 
+        consoleLogResponseBody: false, 
+        credentialsId: "${CES_TOKEN}", 
+        ispwAction: 'BuildTask',
+        ispwRequestBody: '''buildautomatically = true'''
+        }
+    
+    }
+    
+    stage("Deploy Mainframe Code")
+    {
+        if (exists){
+        sleep 3
+
+        automaticBuildParams = readJSON file: 'automaticBuildParams.txt'
+   
+        ispwOperation connectionId: "${HCI_Conn_ID}", 
+        consoleLogResponseBody: false, 
+        credentialsId: "${CES_TOKEN}", 
+        ispwAction: 'DeployAssignment', 
+        ispwRequestBody: "assignmentId=${automaticBuildParams.containerId}\nlevel=${automaticBuildParams.taskLevel}" 
+        }
+    }
+
+    stage("Execute Tests")
+    {
+    
+        step([$class: 'TotalTestBuilder', 
+        ccClearStats: true,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+        ccRepo: "SALESSUP.SXK1.CCREPOS",
+        ccSystem: "SXK1", 
+        ccTestId: "${BUILD_NUMBER}",        // Jenkins environemnt variable, resolves to build number, i.e. #177 
+        credentialsId: "${HCI_Token}", 
+        deleteTemp: true,                   // (true|false) Automatically delete any temp files created during the execution
+        hlq: '',                            // Optional - high level qualifier used when allocation datasets
+        connectionId: "${HCI_Conn_ID}",    
+        jcl: "Runner_FT1.jcl",                  // Name of the JCL file in the Total Test Project to execute
+        projectFolder: "UnitTest", // Name of the Folder in the file system that contains the Total Test Project.  
+        testSuite: "CWBWCOBX_Scenario.testscenario",// Name of the Total Test Scenario to execute
+        useStubs: false])  
+    
+    }
+    
+    stage("Collect Coverage Metrics")
+    {
+            // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
+            // The source variable is the location of the source that was downloaded from ISPW
+            def String sources="COB"
+
+            // The Code Coverage Plugin passes it's primary configuration in the string or a file
+            def ccproperties = 'cc.sources=' + sources + '\rcc.repos=SALESSUP.SXK1.CCREPOS' + '\rcc.system=SXK1' + '\rcc.test=' + BUILD_NUMBER
+
+            step([$class: 'CodeCoverageBuilder',
+            analysisProperties: ccproperties,       // Pass in the analysisProperties as a string
+            analysisPropertiesPath: '',             // Pass in the analysisProperties as a file.  Not used in this example
+            connectionId: "${HCI_Conn_ID}", 
+            credentialsId: "${HCI_Token}"])
+    }
+
+
+    stage("SonarQube Scan")
+    {
+        // Requires SonarQube Scanner 2.8+
+        def scannerHome = tool 'scanner';
+        withSonarQubeEnv('cwcc') 
+        {
+        
+            // Finds all of the Total Test results files that will be submitted to SonarQube
+            def TTTListOfResults = findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+
+            // Build the sonar testExecutionReportsPaths property
+            // Start will the property itself
+            def SQ_TestResult          = "-Dsonar.testExecutionReportPaths="    
+
+            // Loop through each result Total Test results file found
+            TTTListOfResults.each 
+            {
+                def TTTResultName    = it.name   // Get the name of the Total Test results file   
+                SQ_TestResult = SQ_TestResult + "TTTSonar/" + it.name +  ',' // Append the results file to the property
+            }
+        
+
+            
+            def SQ_PullRequest          = " -Dsonar.branch.target=master" 
+            def SQ_Branch               = " -Dsonar.branch.name=" + env.BRANCH_NAME
+            def SQ_Test                 = " -Dsonar.tests=UnitTest ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
+            def SQ_ProjectKey           = " -Dsonar.projectKey=GIT1 -Dsonar.projectName=GIT1 -Dsonar.projectVersion=${BUILD_NUMBER}"
+            def SQ_Source               = " -Dsonar.sources=COB"
+            def SQ_Copybook             = " -Dsonar.cobol.copy.directories=COPY"
+            def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
+            
+            if (env.BRANCH_NAME == 'master') {
+                bat "${scannerHome}/bin/sonar-scanner" + SQ_Branch + SQ_Test + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+            }
+            else{
+                bat "${scannerHome}/bin/sonar-scanner" + SQ_PullRequest + SQ_Branch + SQ_Test + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+            }
+        }
+    }    
+    
+
+}
