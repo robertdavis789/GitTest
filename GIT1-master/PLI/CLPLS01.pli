@@ -1,3 +1,0 @@
-  clpls01: proc;
-    put skip list(' Message from PLI Subroutine CLPLS01');
- end clpls01;
