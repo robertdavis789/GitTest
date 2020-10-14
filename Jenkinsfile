@@ -22,7 +22,7 @@ node {
     ispwOperation connectionId: 'fc29cb3e-b2f9-4573-ae44-4a6a201c8e07',
 	consoleLogResponseBody: true,
 	credentialsId: 'fcbfff82-d028-48a0-8ab2-82c1875239c0',
-	ispwAction: 'BuildTask',
+	ispwAction: 'BuildAssignment',
 	ispwRequestBody: '''buildAutomatically=true'''
  }
 }
