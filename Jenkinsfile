@@ -19,7 +19,7 @@ node {
  }
  stage ('Build ISPW task')
  {
-    ispwOperation connectionId: 'fc29cb3e-b2f9-4573-ae44-4a6a201c8e0',
+    ispwOperation connectionId: 'fc29cb3e-b2f9-4573-ae44-4a6a201c8e07',
 	consoleLogResponseBody: true,
 	credentialsId: 'CES',
 	ispwAction: 'BuildAssignment',
